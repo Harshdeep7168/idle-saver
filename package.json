@@ -1,0 +1,101 @@
+{
+  "name": "idle-saver",
+  "displayName": "Idle Saver",
+  "description": "Reclaims VS Code's memory while you are idle. Windows only.",
+  "version": "0.1.0",
+  "publisher": "harshdeep-singh-saint",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Harshdeep7168/idle-saver.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Harshdeep7168/idle-saver/issues"
+  },
+  "homepage": "https://github.com/Harshdeep7168/idle-saver#readme",
+  "engines": { "vscode": "^1.93.0" },
+  "categories": ["Other"],
+  "keywords": ["memory", "performance", "ram", "idle", "windows"],
+  "pricing": "Free",
+  "main": "./out/extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      { "command": "idleSaver.trimNow", "title": "Trim Memory Now", "category": "Idle Saver" },
+      { "command": "idleSaver.restoreNow", "title": "Restore Full Performance", "category": "Idle Saver" },
+      { "command": "idleSaver.showReport", "title": "Show Memory Report", "category": "Idle Saver" },
+      { "command": "idleSaver.toggle", "title": "Toggle", "category": "Idle Saver" }
+    ],
+    "configuration": {
+      "title": "Idle Saver",
+      "properties": {
+        "idleSaver.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Watch for idleness and reclaim memory automatically."
+        },
+        "idleSaver.lightIdleSeconds": {
+          "type": "number",
+          "default": 120,
+          "minimum": 5,
+          "description": "Seconds of inactivity with the window focused before working sets are trimmed."
+        },
+        "idleSaver.unfocusedIdleSeconds": {
+          "type": "number",
+          "default": 20,
+          "minimum": 5,
+          "description": "Seconds after the window loses focus before working sets are trimmed. Alt-tabbing away is a strong signal, so this is much shorter."
+        },
+        "idleSaver.deepIdleSeconds": {
+          "type": "number",
+          "default": 600,
+          "minimum": 30,
+          "description": "Seconds of inactivity before helper processes are put into efficiency mode."
+        },
+        "idleSaver.efficiencyModeOnDeepIdle": {
+          "type": "boolean",
+          "default": true,
+          "description": "Apply EcoQoS and idle priority to helper processes at deep idle (Task Manager shows this as Efficiency mode)."
+        },
+        "idleSaver.restartLanguageServersAfterMinutes": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Restart the Dart and TypeScript analysis servers after this many idle minutes to reclaim heap they will never return on their own. 0 disables. Costs a re-index when you come back."
+        },
+        "idleSaver.minimumFreeMemoryPercent": {
+          "type": "number",
+          "default": 25,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Only act when free physical memory drops below this percentage. Set to 0 to always act."
+        },
+        "idleSaver.extraProcessNames": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Extra process names to include beyond VS Code's own tree, e.g. dartvm.exe or dartaotruntime.exe when they are not children of this window."
+        },
+        "idleSaver.excludePids": {
+          "type": "array",
+          "items": { "type": "number" },
+          "default": [],
+          "description": "Process IDs to never touch."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --target win32-x64 --target win32-arm64",
+    "publish": "vsce publish --target win32-x64 --target win32-arm64"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.93.0",
+    "@vscode/vsce": "^3.2.0",
+    "typescript": "^5.4.0"
+  }
+}
